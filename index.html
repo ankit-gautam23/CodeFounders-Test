@@ -936,7 +936,7 @@
 
         // Google Sheets configuration
         const GOOGLE_SHEETS_CONFIG = {
-            scriptUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', // Replace with your Google Apps Script URL
+            scriptUrl: 'https://script.google.com/macros/s/AKfycbxetksM2xQnHwnN_G6wSNRImva2h3ELYyeDWsRENp8RPhj-KD39oZ-AhGsar-0jgo8t/exec',
             sheetName: 'TestResults'
         };
 
@@ -1486,13 +1486,104 @@
                 email: document.getElementById('email').value
             };
 
+            // Check for duplicate email/phone before proceeding
+            checkForDuplicates(testState.userData.email, testState.userData.mobileNumber);
+        });
+
+        // Check for duplicate email/phone
+        async function checkForDuplicates(email, mobileNumber) {
+            try {
+                // Show loading state
+                const submitBtn = document.querySelector('#registrationForm .start-btn');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+                submitBtn.disabled = true;
+
+                // Send request to check for duplicates
+                const formData = new FormData();
+                formData.append('action', 'check_duplicates');
+                formData.append('email', email);
+                formData.append('mobileNumber', mobileNumber);
+
+                const response = await fetch(GOOGLE_SHEETS_CONFIG.scriptUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.text();
+                console.log('Duplicate check result:', result); // Debug log
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+
+                if (result.includes('duplicate_found')) {
+                    // Duplicate found - show error
+                    showDuplicateError();
+                    return; // Stop here, don't proceed
+                } else if (result.includes('no_duplicate')) {
+                    // No duplicate - proceed to media screen
+                    proceedToMediaScreen();
+                } else {
+                    // Error in checking - show error and don't proceed
+                    console.error('Error checking duplicates:', result);
+                    showDuplicateError('Error checking for duplicates. Please try again or contact support.');
+                    return; // Stop here, don't proceed
+                }
+
+            } catch (error) {
+                console.error('Error checking duplicates:', error);
+                // Reset button
+                const submitBtn = document.querySelector('#registrationForm .start-btn');
+                submitBtn.innerHTML = '<i class="fas fa-play"></i> Start Test';
+                submitBtn.disabled = false;
+                
+                // Show error and don't proceed
+                showDuplicateError('Error checking for duplicates. Please try again or contact support.');
+            }
+        }
+
+        function showDuplicateError(customMessage = null) {
+            // Create error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'duplicate-error';
+            
+            const message = customMessage || 
+                'A test has already been taken with this email address or mobile number. Each person can only take the test once. If you believe this is an error, please contact support.';
+            
+            errorDiv.innerHTML = `
+                <div style="background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                    <h4 style="margin: 0 0 0.5rem 0;">
+                        <i class="fas fa-exclamation-triangle"></i> Test Already Taken
+                    </h4>
+                    <p style="margin: 0; font-size: 0.9rem;">
+                        ${message}
+                    </p>
+                </div>
+            `;
+
+            // Remove any existing error
+            const existingError = document.querySelector('.duplicate-error');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Add error to form
+            const form = document.getElementById('registrationForm');
+            form.appendChild(errorDiv);
+
+            // Scroll to error
+            errorDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function proceedToMediaScreen() {
             // Show media permissions screen
             document.getElementById('registrationScreen').classList.remove('active');
             document.getElementById('mediaScreen').classList.add('active');
             
             // Initialize media access
             initializeMediaAccess();
-        });
+        }
 
         // Media access functions
         async function initializeMediaAccess() {
