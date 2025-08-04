@@ -1,0 +1,1980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeFounders - Entrance Test</title>
+    <meta name="description" content="CodeFounders Entrance Test - Assess your grasping power and reasoning abilities">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #ff6b35;
+            --primary-light: #f7931e;
+            --accent: #8b5cf6;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #8b5cf6 100%);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--gradient);
+            color: var(--white);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .timer {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: none; /* Hidden by default */
+        }
+
+        .timer.active {
+            display: block; /* Show when test is active */
+        }
+
+        .timer.warning {
+            background: var(--warning);
+            color: var(--white);
+            animation: pulse 1s infinite;
+        }
+
+        .timer.danger {
+            background: var(--error);
+            color: var(--white);
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Test Screens */
+        .screen {
+            display: none;
+            min-height: calc(100vh - 80px);
+            padding: 2rem 0;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Registration Form */
+        .registration-form {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        /* Media Preview */
+        .media-preview {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        #mediaPreview {
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            border-radius: 15px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .media-status {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg);
+            border-radius: 25px;
+            font-weight: 500;
+        }
+
+        .status-item i {
+            font-size: 1.2rem;
+        }
+
+        .status-item.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-item.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-item.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .welcome-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 2rem;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+        }
+
+        .test-info {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .info-item i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-item p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .start-btn {
+            background: var(--gradient);
+            color: var(--white);
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Test Screen */
+        .test-screen {
+            padding: 2rem 0;
+        }
+
+        .question-container {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .question-number {
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .media-indicator {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .media-indicator i {
+            animation: pulse 2s infinite;
+        }
+
+        /* Camera Display */
+        .camera-display {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            background: var(--white);
+        }
+
+        #testCamera {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.8), rgba(139, 92, 246, 0.8));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .camera-overlay:hover {
+            opacity: 1;
+        }
+
+        .camera-overlay i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Responsive camera display */
+        @media (max-width: 768px) {
+            .camera-display {
+                width: 150px;
+                height: 112px;
+                top: 10px;
+                right: 10px;
+            }
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+            background: #fff5f2;
+        }
+
+        .option.selected {
+            border-color: var(--primary);
+            background: #fff5f2;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 1rem;
+            transform: scale(1.2);
+        }
+
+        .option-label {
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Navigation */
+        .test-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding: 1rem 0;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-light);
+        }
+
+        .nav-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            margin: 0 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .results-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+        }
+
+        .results-icon.success {
+            color: var(--success);
+        }
+
+        .results-icon.warning {
+            color: var(--warning);
+        }
+
+        .results-icon.error {
+            color: var(--error);
+        }
+
+        .score-display {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--white);
+            background: var(--gradient);
+        }
+
+        .score-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .score-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg);
+            border-radius: 10px;
+        }
+
+        .score-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-item p {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Security Warnings */
+        .security-warning {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            text-align: center;
+            max-width: 400px;
+            display: none;
+        }
+
+        .security-warning.active {
+            display: block;
+        }
+
+        .warning-icon {
+            font-size: 3rem;
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        .warning-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--error);
+        }
+
+        .warning-message {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .warning-countdown {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--error);
+            margin-bottom: 1rem;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--white);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 1001;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .test-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .progress-bar {
+                margin: 1rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">CodeFounders</div>
+                <div class="timer" id="timer">00:00</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Registration Screen -->
+    <div class="screen active" id="registrationScreen">
+        <div class="container">
+            <div class="welcome-screen">
+                <div class="welcome-icon">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h1 class="welcome-title">CodeFounders Entrance Test</h1>
+                <p class="welcome-subtitle">Please provide your details to start the test</p>
+                
+                <div class="test-info">
+                    <form id="registrationForm" class="registration-form">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" required placeholder="Enter your full name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="mobileNumber">Mobile Number *</label>
+                            <input type="tel" id="mobileNumber" name="mobileNumber" required placeholder="Enter your mobile number">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                        </div>
+                        
+
+                        
+                        <button type="submit" class="start-btn">
+                            <i class="fas fa-play"></i> Start Test
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Media Permissions Screen -->
+    <div class="screen" id="mediaScreen">
+        <div class="container">
+            <div class="welcome-screen">
+                <div class="welcome-icon">
+                    <i class="fas fa-video"></i>
+                </div>
+                <h1 class="welcome-title">Camera & Microphone Access</h1>
+                <p class="welcome-subtitle">Please enable camera and microphone for test monitoring</p>
+                
+                <div class="test-info">
+                    <div class="media-preview">
+                        <video id="mediaPreview" autoplay muted playsinline></video>
+                        <div class="media-status">
+                            <div class="status-item">
+                                <i class="fas fa-video" id="cameraIcon"></i>
+                                <span id="cameraStatus">Camera: Checking...</span>
+                            </div>
+                            <div class="status-item">
+                                <i class="fas fa-microphone" id="micIcon"></i>
+                                <span id="micStatus">Microphone: Checking...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #e8f4fd; padding: 1.5rem; border-radius: 10px; margin-top: 2rem;">
+                        <h4 style="color: var(--primary); margin-bottom: 1rem;">
+                            <i class="fas fa-info-circle"></i> Why We Need Access:
+                        </h4>
+                        <ul style="color: var(--text-light); margin: 0; padding-left: 1.5rem;">
+                            <li>Camera: To monitor test environment and prevent cheating</li>
+                            <li>Microphone: To detect background noise and ensure test integrity</li>
+                            <li>Your privacy is protected - recordings are not stored</li>
+                            <li>Access is only required during the test duration</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <button class="start-btn" id="enableMediaBtn" onclick="enableMedia()" disabled>
+                    <i class="fas fa-play"></i> Enable Access & Continue
+                </button>
+                
+                <div style="background: #fff3cd; padding: 1rem; border-radius: 10px; margin-top: 1rem; border-left: 4px solid var(--warning);">
+                    <p style="color: var(--text); margin: 0; font-weight: 500;">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        <strong>Required:</strong> Camera and microphone access is mandatory to take this test. 
+                        You cannot proceed without enabling these permissions.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div class="screen" id="welcomeScreen">
+        <div class="container">
+            <div class="welcome-screen">
+                <div class="welcome-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1 class="welcome-title">CodeFounders Entrance Test</h1>
+                <p class="welcome-subtitle">Assess your grasping power and reasoning abilities</p>
+                
+                <div class="test-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <h4>Duration</h4>
+                            <p>60 Minutes</p>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-question-circle"></i>
+                            <h4>Questions</h4>
+                            <p>30 Questions</p>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-brain"></i>
+                            <h4>Topics</h4>
+                            <p>Logical Reasoning</p>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <h4>Anti-Cheating</h4>
+                            <p>Strict Monitoring</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #e8f4fd; padding: 1.5rem; border-radius: 10px; margin-top: 2rem;">
+                        <h4 style="color: var(--primary); margin-bottom: 1rem;">
+                            <i class="fas fa-info-circle"></i> Important Instructions:
+                        </h4>
+                        <ul style="color: var(--text-light); margin: 0; padding-left: 1.5rem;">
+                            <li>Test will be conducted in fullscreen mode</li>
+                            <li>Switching tabs or windows will result in warnings</li>
+                            <li>2 security violations will auto-submit the test</li>
+                            <li>Ensure stable internet connection</li>
+                            <li>Test fee is non-refundable</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <button class="start-btn" onclick="startTest()">
+                    <i class="fas fa-play"></i> Start Test
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test Screen -->
+    <div class="screen" id="testScreen">
+        <div class="container">
+            <div class="test-screen">
+                <div class="question-container">
+                    <div class="question-header">
+                        <div class="question-number" id="questionNumber">Question 1</div>
+                        <div class="user-info" id="userInfo">
+                            <span id="userName">User</span> | <span id="userEmail">email@example.com</span>
+                        </div>
+                        <div class="media-indicator" id="mediaIndicator" style="display: none;">
+                            <i class="fas fa-video"></i>
+                            <span>Monitoring Active</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Camera Display During Test -->
+                    <div class="camera-display" id="cameraDisplay" style="display: none;">
+                        <video id="testCamera" autoplay muted playsinline></video>
+                        <div class="camera-overlay">
+                            <i class="fas fa-video"></i>
+                            <span>Live Monitoring</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-text" id="questionText">
+                        Loading question...
+                    </div>
+                    
+                    <div class="options-container" id="optionsContainer">
+                        <!-- Options will be populated here -->
+                    </div>
+                </div>
+                
+                <div class="test-navigation">
+                    <button class="nav-btn" id="prevBtn" onclick="previousQuestion()" disabled>
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    
+                    <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div class="screen" id="resultsScreen">
+        <div class="container">
+            <div class="results-screen">
+                <div class="results-icon" id="resultsIcon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                
+                <h1 class="welcome-title">Test Completed!</h1>
+                <p class="welcome-subtitle">Your results are ready</p>
+                
+                <div class="score-display">
+                    <div class="score-circle" id="scoreCircle">85%</div>
+                    
+                    <div class="score-details">
+                        <div class="score-item">
+                            <h4>Total Questions</h4>
+                            <p id="totalQuestions">30</p>
+                        </div>
+                        <div class="score-item">
+                            <h4>Correct Answers</h4>
+                            <p id="correctAnswers">25</p>
+                        </div>
+                        <div class="score-item">
+                            <h4>Accuracy</h4>
+                            <p id="accuracy">83%</p>
+                        </div>
+                        <div class="score-item">
+                            <h4>Time Taken</h4>
+                            <p id="timeTaken">25:30</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #e8f4fd; padding: 1.5rem; border-radius: 10px; margin-top: 2rem;">
+                        <h4 style="color: var(--primary); margin-bottom: 1rem;">
+                            <i class="fas fa-envelope"></i> Next Steps:
+                        </h4>
+                        <p style="color: var(--text-light); margin: 0;">
+                            You will receive an email within 24 hours with your detailed results and next steps for joining CodeFounders.
+                        </p>
+                    </div>
+                </div>
+                
+                <button class="start-btn" onclick="location.reload()">
+                    <i class="fas fa-redo"></i> Take Test Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Warning Overlay -->
+    <div class="security-warning" id="securityWarning">
+        <div class="warning-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 class="warning-title">Security Violation</h3>
+        <p class="warning-message">You have violated test security rules. Test will auto-submit in:</p>
+        <div class="warning-countdown" id="warningCountdown">10</div>
+        <p style="color: var(--text-light); font-size: 0.9rem;">
+            Please ensure you're in fullscreen mode and don't switch tabs.
+        </p>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Test state management
+        const testState = {
+            currentQuestion: 0,
+            answers: [],
+            startTime: null,
+            endTime: null,
+            securityViolations: 0,
+            warningTimeout: null,
+            userData: {
+                fullName: '',
+                mobileNumber: '',
+                email: ''
+            },
+            mediaStream: null,
+            videoElement: null
+        };
+
+        // Google Sheets configuration
+        const GOOGLE_SHEETS_CONFIG = {
+            scriptUrl: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', // Replace with your Google Apps Script URL
+            sheetName: 'TestResults'
+        };
+
+        // Test questions data
+        const testQuestions = {
+            "logical_reasoning": [
+                {
+                    question: "If all roses are flowers and some flowers are red, then:",
+                    options: ["All roses are red", "Some roses are red", "No roses are red", "Cannot be determined"],
+                    correct: 1
+                },
+                {
+                    question: "A train leaves station A at 2 PM and arrives at station B at 6 PM. If the distance is 200 km, what is the average speed?",
+                    options: ["40 km/h", "50 km/h", "60 km/h", "80 km/h"],
+                    correct: 1
+                },
+                {
+                    question: "If 5 workers can complete a task in 10 days, how many days will it take 10 workers to complete the same task?",
+                    options: ["2 days", "5 days", "10 days", "20 days"],
+                    correct: 1
+                },
+                {
+                    question: "Which number comes next: 2, 6, 12, 20, 30, ?",
+                    options: ["40", "42", "44", "46"],
+                    correct: 1
+                },
+                {
+                    question: "If A + B = 10 and A - B = 4, what is A?",
+                    options: ["3", "5", "7", "9"],
+                    correct: 2
+                },
+                {
+                    question: "A clock shows 3:15. What is the angle between the hour and minute hands?",
+                    options: ["7.5°", "15°", "22.5°", "30°"],
+                    correct: 0
+                },
+                {
+                    question: "If 3 cats catch 3 mice in 3 minutes, how many cats will catch 100 mice in 100 minutes?",
+                    options: ["1", "3", "10", "100"],
+                    correct: 1
+                },
+                {
+                    question: "Which word is different from the others?",
+                    options: ["Apple", "Banana", "Carrot", "Orange"],
+                    correct: 2
+                },
+                {
+                    question: "If today is Monday, what day will it be 100 days from now?",
+                    options: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+                    correct: 2
+                },
+                {
+                    question: "A rectangle has a perimeter of 20 cm and an area of 24 cm². What are its dimensions?",
+                    options: ["4 cm × 6 cm", "3 cm × 8 cm", "2 cm × 12 cm", "1 cm × 24 cm"],
+                    correct: 0
+                },
+                {
+                    question: "If all doctors wear white coats and some people in white coats are nurses, then:",
+                    options: ["All nurses are doctors", "Some nurses are doctors", "No nurses are doctors", "Cannot be determined"],
+                    correct: 3
+                },
+                {
+                    question: "A car travels 120 km in 2 hours. What is its speed in m/s?",
+                    options: ["16.67 m/s", "20 m/s", "25 m/s", "30 m/s"],
+                    correct: 0
+                },
+                {
+                    question: "If 8 machines can produce 400 items in 5 hours, how many items can 12 machines produce in 3 hours?",
+                    options: ["360", "400", "480", "600"],
+                    correct: 0
+                },
+                {
+                    question: "Find the next number: 1, 3, 6, 10, 15, ?",
+                    options: ["20", "21", "22", "25"],
+                    correct: 1
+                },
+                {
+                    question: "If 2x + 3y = 12 and x - y = 2, what is x?",
+                    options: ["3", "4", "5", "6"],
+                    correct: 1
+                },
+                {
+                    question: "A clock shows 9:45. What is the angle between the hour and minute hands?",
+                    options: ["22.5°", "45°", "67.5°", "90°"],
+                    correct: 0
+                },
+                {
+                    question: "If 4 workers can build a wall in 6 days, how many workers are needed to build it in 3 days?",
+                    options: ["6", "8", "10", "12"],
+                    correct: 1
+                },
+                {
+                    question: "Which word doesn't belong: Lion, Tiger, Elephant, Cheetah?",
+                    options: ["Lion", "Tiger", "Elephant", "Cheetah"],
+                    correct: 2
+                },
+                {
+                    question: "If today is Wednesday, what day was it 50 days ago?",
+                    options: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+                    correct: 0
+                },
+                {
+                    question: "A square has an area of 64 cm². What is its perimeter?",
+                    options: ["16 cm", "24 cm", "32 cm", "48 cm"],
+                    correct: 2
+                },
+                {
+                    question: "If all students study and some students play sports, then:",
+                    options: ["All sports players are students", "Some sports players study", "No sports players study", "Cannot be determined"],
+                    correct: 1
+                },
+                {
+                    question: "A bus travels 180 km in 3 hours. What is its speed in km/h?",
+                    options: ["45 km/h", "50 km/h", "60 km/h", "75 km/h"],
+                    correct: 2
+                },
+                {
+                    question: "If 6 workers can complete a project in 8 days, how many days will it take 12 workers?",
+                    options: ["2 days", "4 days", "6 days", "8 days"],
+                    correct: 1
+                },
+                {
+                    question: "Complete the sequence: 3, 7, 15, 31, 63, ?",
+                    options: ["127", "125", "124", "126"],
+                    correct: 0
+                },
+                {
+                    question: "If 3x + 2y = 14 and x + y = 5, what is y?",
+                    options: ["1", "2", "3", "4"],
+                    correct: 0
+                },
+                {
+                    question: "A clock shows 6:30. What is the angle between the hour and minute hands?",
+                    options: ["15°", "30°", "45°", "60°"],
+                    correct: 0
+                },
+                {
+                    question: "If 5 machines can produce 100 items in 4 hours, how many items can 8 machines produce in 6 hours?",
+                    options: ["200", "240", "300", "320"],
+                    correct: 1
+                },
+                {
+                    question: "Which word is different: Computer, Laptop, Tablet, Book?",
+                    options: ["Computer", "Laptop", "Tablet", "Book"],
+                    correct: 3
+                },
+                {
+                    question: "If today is Friday, what day will it be 35 days from now?",
+                    options: ["Friday", "Saturday", "Sunday", "Monday"],
+                    correct: 2
+                },
+                {
+                    question: "A circle has a radius of 7 cm. What is its area? (π = 3.14)",
+                    options: ["43.96 cm²", "153.86 cm²", "154 cm²", "154.86 cm²"],
+                    correct: 1
+                }
+            ],
+            "pattern_recognition": [
+                {
+                    question: "What comes next: 1, 1, 2, 3, 5, 8, 13, ?",
+                    options: ["18", "19", "20", "21"],
+                    correct: 3
+                },
+                {
+                    question: "Find the pattern: O, T, T, F, F, S, S, E, ?",
+                    options: ["N", "T", "E", "I"],
+                    correct: 0
+                },
+                {
+                    question: "Complete the series: 2, 5, 10, 17, 26, ?",
+                    options: ["35", "37", "39", "41"],
+                    correct: 1
+                },
+                {
+                    question: "What is the next number: 144, 121, 100, 81, 64, ?",
+                    options: ["49", "48", "36", "25"],
+                    correct: 0
+                },
+                {
+                    question: "Find the missing number: 7, 26, 63, 124, 215, ?",
+                    options: ["342", "336", "340", "344"],
+                    correct: 0
+                },
+                {
+                    question: "Complete the pattern: AZ, BY, CX, DW, ?",
+                    options: ["EV", "FU", "EX", "FV"],
+                    correct: 0
+                },
+                {
+                    question: "What comes next: 3, 7, 15, 31, 63, ?",
+                    options: ["127", "125", "124", "126"],
+                    correct: 0
+                },
+                {
+                    question: "Find the pattern: 1, 8, 27, 64, 125, ?",
+                    options: ["216", "196", "256", "343"],
+                    correct: 0
+                },
+                {
+                    question: "Complete: J, F, M, A, M, J, J, A, ?",
+                    options: ["S", "O", "N", "D"],
+                    correct: 0
+                },
+                {
+                    question: "What is next in: 2, 6, 14, 30, 62, ?",
+                    options: ["126", "124", "128", "130"],
+                    correct: 0
+                },
+                {
+                    question: "Find the pattern: 2, 4, 8, 16, 32, ?",
+                    options: ["48", "64", "56", "72"],
+                    correct: 1
+                },
+                {
+                    question: "Complete: A, D, G, J, M, ?",
+                    options: ["P", "Q", "R", "S"],
+                    correct: 0
+                },
+                {
+                    question: "What comes next: 1, 4, 9, 16, 25, ?",
+                    options: ["30", "36", "35", "40"],
+                    correct: 1
+                },
+                {
+                    question: "Find the pattern: 3, 6, 11, 18, 27, ?",
+                    options: ["36", "38", "40", "42"],
+                    correct: 1
+                },
+                {
+                    question: "Complete: 5, 10, 20, 40, 80, ?",
+                    options: ["120", "140", "160", "180"],
+                    correct: 2
+                },
+                {
+                    question: "What is next: 1, 3, 6, 10, 15, 21, ?",
+                    options: ["28", "29", "30", "31"],
+                    correct: 0
+                },
+                {
+                    question: "Find the pattern: 2, 6, 12, 20, 30, ?",
+                    options: ["40", "42", "44", "46"],
+                    correct: 1
+                },
+                {
+                    question: "Complete: 4, 9, 16, 25, 36, ?",
+                    options: ["45", "49", "50", "52"],
+                    correct: 1
+                },
+                {
+                    question: "What comes next: 1, 2, 4, 7, 11, 16, ?",
+                    options: ["20", "22", "24", "26"],
+                    correct: 1
+                },
+                {
+                    question: "Find the pattern: 3, 9, 27, 81, 243, ?",
+                    options: ["486", "729", "648", "567"],
+                    correct: 1
+                },
+                {
+                    question: "Complete: 6, 12, 24, 48, 96, ?",
+                    options: ["144", "168", "192", "216"],
+                    correct: 2
+                },
+                {
+                    question: "What is next: 2, 5, 10, 17, 26, 37, ?",
+                    options: ["48", "50", "52", "54"],
+                    correct: 1
+                },
+                {
+                    question: "Find the pattern: 1, 8, 27, 64, 125, 216, ?",
+                    options: ["343", "289", "324", "361"],
+                    correct: 0
+                },
+                {
+                    question: "Complete: 7, 14, 28, 56, 112, ?",
+                    options: ["168", "196", "224", "252"],
+                    correct: 2
+                },
+                {
+                    question: "What comes next: 3, 6, 12, 24, 48, ?",
+                    options: ["72", "84", "96", "108"],
+                    correct: 2
+                },
+                {
+                    question: "Find the pattern: 4, 12, 36, 108, 324, ?",
+                    options: ["648", "972", "1080", "1296"],
+                    correct: 1
+                },
+                {
+                    question: "Complete: 5, 15, 45, 135, 405, ?",
+                    options: ["675", "810", "945", "1215"],
+                    correct: 3
+                },
+                {
+                    question: "What is next: 1, 4, 13, 40, 121, ?",
+                    options: ["364", "365", "366", "367"],
+                    correct: 0
+                },
+                {
+                    question: "Find the pattern: 2, 8, 26, 80, 242, ?",
+                    options: ["726", "728", "730", "732"],
+                    correct: 0
+                },
+                {
+                    question: "Complete: 3, 12, 48, 192, 768, ?",
+                    options: ["1536", "2304", "3072", "3840"],
+                    correct: 2
+                },
+                {
+                    question: "What comes next: 1, 5, 25, 125, 625, ?",
+                    options: ["1250", "1875", "3125", "3750"],
+                    correct: 2
+                }
+            ],
+            "verbal_ability": [
+                {
+                    question: "Choose the word that best completes the sentence: The weather was so _____ that we had to cancel the picnic.",
+                    options: ["pleasant", "beautiful", "terrible", "wonderful"],
+                    correct: 2
+                },
+                {
+                    question: "Select the synonym for 'Eloquent':",
+                    options: ["Quiet", "Articulate", "Confused", "Angry"],
+                    correct: 1
+                },
+                {
+                    question: "Choose the antonym for 'Benevolent':",
+                    options: ["Kind", "Generous", "Malevolent", "Charitable"],
+                    correct: 2
+                },
+                {
+                    question: "Complete the analogy: Book is to Reading as Fork is to:",
+                    options: ["Eating", "Cooking", "Kitchen", "Food"],
+                    correct: 0
+                },
+                {
+                    question: "Select the word that doesn't belong: Happy, Joyful, Sad, Cheerful",
+                    options: ["Happy", "Joyful", "Sad", "Cheerful"],
+                    correct: 2
+                },
+                {
+                    question: "Choose the correct word: The _____ of the mountain was breathtaking.",
+                    options: ["view", "scene", "sight", "All of the above"],
+                    correct: 3
+                },
+                {
+                    question: "Select the synonym for 'Persistent':",
+                    options: ["Lazy", "Determined", "Weak", "Temporary"],
+                    correct: 1
+                },
+                {
+                    question: "Complete: The more you practice, the _____ you become.",
+                    options: ["better", "good", "best", "well"],
+                    correct: 0
+                },
+                {
+                    question: "Choose the antonym for 'Abundant':",
+                    options: ["Plentiful", "Scarce", "Rich", "Full"],
+                    correct: 1
+                },
+                {
+                    question: "Select the word that best fits: The _____ of the story was unexpected.",
+                    options: ["ending", "beginning", "middle", "plot"],
+                    correct: 0
+                },
+                {
+                    question: "Choose the word that best completes: The student was _____ in his studies.",
+                    options: ["diligent", "lazy", "careless", "uninterested"],
+                    correct: 0
+                },
+                {
+                    question: "Select the synonym for 'Meticulous':",
+                    options: ["Careless", "Careful", "Quick", "Slow"],
+                    correct: 1
+                },
+                {
+                    question: "Choose the antonym for 'Optimistic':",
+                    options: ["Happy", "Pessimistic", "Confident", "Hopeful"],
+                    correct: 1
+                },
+                {
+                    question: "Complete the analogy: Doctor is to Patient as Teacher is to:",
+                    options: ["School", "Student", "Classroom", "Education"],
+                    correct: 1
+                },
+                {
+                    question: "Select the word that doesn't belong: Car, Bus, Train, Bicycle",
+                    options: ["Car", "Bus", "Train", "Bicycle"],
+                    correct: 3
+                },
+                {
+                    question: "Choose the correct word: The _____ of the concert was amazing.",
+                    options: ["performance", "audience", "venue", "All of the above"],
+                    correct: 3
+                },
+                {
+                    question: "Select the synonym for 'Innovative':",
+                    options: ["Old", "Creative", "Traditional", "Boring"],
+                    correct: 1
+                },
+                {
+                    question: "Complete: The faster you work, the _____ you finish.",
+                    options: ["sooner", "quick", "fast", "quickly"],
+                    correct: 0
+                },
+                {
+                    question: "Choose the antonym for 'Complex':",
+                    options: ["Simple", "Difficult", "Hard", "Complicated"],
+                    correct: 0
+                },
+                {
+                    question: "Select the word that best fits: The _____ of the movie was confusing.",
+                    options: ["plot", "acting", "direction", "cinematography"],
+                    correct: 0
+                },
+                {
+                    question: "Choose the word that best completes: The solution was _____ and effective.",
+                    options: ["simple", "complicated", "difficult", "complex"],
+                    correct: 0
+                },
+                {
+                    question: "Select the synonym for 'Resilient':",
+                    options: ["Weak", "Strong", "Flexible", "Rigid"],
+                    correct: 2
+                },
+                {
+                    question: "Choose the antonym for 'Authentic':",
+                    options: ["Real", "Fake", "Genuine", "Original"],
+                    correct: 1
+                },
+                {
+                    question: "Complete the analogy: Chef is to Kitchen as Pilot is to:",
+                    options: ["Airplane", "Airport", "Sky", "Flight"],
+                    correct: 0
+                },
+                {
+                    question: "Select the word that doesn't belong: Apple, Orange, Banana, Carrot",
+                    options: ["Apple", "Orange", "Banana", "Carrot"],
+                    correct: 3
+                },
+                {
+                    question: "Choose the correct word: The _____ of the book was fascinating.",
+                    options: ["story", "author", "cover", "All of the above"],
+                    correct: 3
+                },
+                {
+                    question: "Select the synonym for 'Efficient':",
+                    options: ["Slow", "Productive", "Wasteful", "Lazy"],
+                    correct: 1
+                },
+                {
+                    question: "Complete: The harder you study, the _____ your grades will be.",
+                    options: ["better", "good", "best", "well"],
+                    correct: 0
+                },
+                {
+                    question: "Choose the antonym for 'Transparent':",
+                    options: ["Clear", "Opaque", "Visible", "See-through"],
+                    correct: 1
+                },
+                {
+                    question: "Select the word that best fits: The _____ of the speech was inspiring.",
+                    options: ["content", "delivery", "audience", "All of the above"],
+                    correct: 3
+                },
+                {
+                    question: "Choose the word that best completes: The team was _____ in their approach.",
+                    options: ["united", "divided", "separate", "individual"],
+                    correct: 0
+                },
+                {
+                    question: "Select the synonym for 'Accurate':",
+                    options: ["Wrong", "Precise", "Incorrect", "False"],
+                    correct: 1
+                },
+                {
+                    question: "Choose the antonym for 'Flexible':",
+                    options: ["Bendable", "Rigid", "Adaptable", "Versatile"],
+                    correct: 1
+                },
+                {
+                    question: "Complete the analogy: Artist is to Canvas as Writer is to:",
+                    options: ["Paper", "Book", "Pen", "Story"],
+                    correct: 0
+                },
+                {
+                    question: "Select the word that doesn't belong: Eagle, Hawk, Sparrow, Dolphin",
+                    options: ["Eagle", "Hawk", "Sparrow", "Dolphin"],
+                    correct: 3
+                },
+                {
+                    question: "Choose the correct word: The _____ of the experiment was successful.",
+                    options: ["result", "process", "method", "All of the above"],
+                    correct: 3
+                },
+                {
+                    question: "Select the synonym for 'Dedicated':",
+                    options: ["Committed", "Lazy", "Uninterested", "Careless"],
+                    correct: 0
+                },
+                {
+                    question: "Complete: The more you read, the _____ you learn.",
+                    options: ["more", "much", "many", "most"],
+                    correct: 0
+                },
+                {
+                    question: "Choose the antonym for 'Confident':",
+                    options: ["Sure", "Uncertain", "Positive", "Certain"],
+                    correct: 1
+                },
+                {
+                    question: "Select the word that best fits: The _____ of the project was challenging.",
+                    options: ["scope", "timeline", "budget", "All of the above"],
+                    correct: 3
+                }
+            ]
+        };
+
+        // Flatten all questions into a single pool
+        const questionPool = [
+            ...testQuestions.logical_reasoning,
+            ...testQuestions.pattern_recognition,
+            ...testQuestions.verbal_ability
+        ];
+
+        // Function to shuffle array
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Randomly select 30 questions from the pool
+        const allQuestions = shuffleArray(questionPool).slice(0, 30);
+
+        // Handle registration form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            testState.userData = {
+                fullName: document.getElementById('fullName').value,
+                mobileNumber: document.getElementById('mobileNumber').value,
+                email: document.getElementById('email').value
+            };
+
+            // Show media permissions screen
+            document.getElementById('registrationScreen').classList.remove('active');
+            document.getElementById('mediaScreen').classList.add('active');
+            
+            // Initialize media access
+            initializeMediaAccess();
+        });
+
+        // Media access functions
+        async function initializeMediaAccess() {
+            const videoElement = document.getElementById('mediaPreview');
+            const cameraStatus = document.getElementById('cameraStatus');
+            const micStatus = document.getElementById('micStatus');
+            const cameraIcon = document.getElementById('cameraIcon');
+            const micIcon = document.getElementById('micIcon');
+            const enableBtn = document.getElementById('enableMediaBtn');
+            
+            try {
+                // Request media access
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+                
+                // Store stream for later use
+                testState.mediaStream = stream;
+                testState.videoElement = videoElement;
+                
+                // Display video preview
+                videoElement.srcObject = stream;
+                
+                // Update status indicators
+                cameraStatus.textContent = 'Camera: Connected';
+                micStatus.textContent = 'Microphone: Connected';
+                cameraIcon.className = 'fas fa-video';
+                micIcon.className = 'fas fa-microphone';
+                
+                // Add success styling
+                cameraStatus.parentElement.className = 'status-item success';
+                micStatus.parentElement.className = 'status-item success';
+                
+                // Enable continue button
+                enableBtn.disabled = false;
+                enableBtn.innerHTML = '<i class="fas fa-play"></i> Continue to Test';
+                
+            } catch (error) {
+                console.error('Media access error:', error);
+                
+                // Update status based on error
+                if (error.name === 'NotAllowedError') {
+                    cameraStatus.textContent = 'Camera: Access Denied';
+                    micStatus.textContent = 'Microphone: Access Denied';
+                    cameraIcon.className = 'fas fa-video-slash';
+                    micIcon.className = 'fas fa-microphone-slash';
+                    
+                    cameraStatus.parentElement.className = 'status-item error';
+                    micStatus.parentElement.className = 'status-item error';
+                } else if (error.name === 'NotFoundError') {
+                    cameraStatus.textContent = 'Camera: Not Found';
+                    micStatus.textContent = 'Microphone: Not Found';
+                    cameraIcon.className = 'fas fa-video-slash';
+                    micIcon.className = 'fas fa-microphone-slash';
+                    
+                    cameraStatus.parentElement.className = 'status-item error';
+                    micStatus.parentElement.className = 'status-item error';
+                } else {
+                    cameraStatus.textContent = 'Camera: Error';
+                    micStatus.textContent = 'Microphone: Error';
+                    cameraIcon.className = 'fas fa-exclamation-triangle';
+                    micIcon.className = 'fas fa-exclamation-triangle';
+                    
+                    cameraStatus.parentElement.className = 'status-item warning';
+                    micStatus.parentElement.className = 'status-item warning';
+                }
+                
+                // Media access is required - show error message
+                enableBtn.disabled = true;
+                enableBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Media Access Required';
+                
+                // Show error message
+                showNotification('⚠️ Camera and microphone access is required to take this test. Please enable permissions and refresh the page.');
+            }
+        }
+
+        function enableMedia() {
+            // Show welcome screen
+            document.getElementById('mediaScreen').classList.remove('active');
+            document.getElementById('welcomeScreen').classList.add('active');
+        }
+
+
+
+        // Initialize test
+        function startTest() {
+            // Ensure media is available (mandatory)
+            if (!testState.mediaStream) {
+                showNotification('⚠️ Camera and microphone access is required. Please enable permissions first.');
+                return;
+            }
+
+            // Request fullscreen
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen();
+            }
+
+            // Enable anti-cheating measures
+            enableStrictAntiCheating();
+
+            // Show and start timer
+            const timerElement = document.getElementById('timer');
+            timerElement.classList.add('active');
+            timerElement.textContent = '60:00';
+            
+            testState.startTime = new Date();
+            startTimer();
+
+            // Show test screen
+            document.getElementById('welcomeScreen').classList.remove('active');
+            document.getElementById('testScreen').classList.add('active');
+
+            // Update user info display
+            document.getElementById('userName').textContent = testState.userData.fullName;
+            document.getElementById('userEmail').textContent = testState.userData.email;
+
+            // Show media indicator and camera display (mandatory)
+            document.getElementById('mediaIndicator').style.display = 'flex';
+            
+            // Show camera display
+            const cameraDisplay = document.getElementById('cameraDisplay');
+            const testCamera = document.getElementById('testCamera');
+            cameraDisplay.style.display = 'block';
+            testCamera.srcObject = testState.mediaStream;
+
+            // Load first question
+            loadQuestion(0);
+        }
+
+        // Load question
+        function loadQuestion(index) {
+            const question = allQuestions[index];
+            if (!question) return;
+
+            document.getElementById('questionNumber').textContent = `Question ${index + 1}`;
+            document.getElementById('questionText').textContent = question.question;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, optionIndex) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.onclick = () => selectOption(optionIndex);
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = `question${index}`;
+                radio.id = `option${optionIndex}`;
+                radio.checked = testState.answers[index] === optionIndex;
+
+                const label = document.createElement('label');
+                label.className = 'option-label';
+                label.htmlFor = `option${optionIndex}`;
+                label.textContent = option;
+
+                optionDiv.appendChild(radio);
+                optionDiv.appendChild(label);
+                optionsContainer.appendChild(optionDiv);
+
+                if (testState.answers[index] === optionIndex) {
+                    optionDiv.classList.add('selected');
+                }
+            });
+
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').textContent = index === allQuestions.length - 1 ? 'Submit Test' : 'Next';
+
+            // Update progress
+            updateProgress();
+        }
+
+        // Select option
+        function selectOption(optionIndex) {
+            testState.answers[testState.currentQuestion] = optionIndex;
+            
+            // Update visual selection
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                option.classList.toggle('selected', index === optionIndex);
+                option.querySelector('input[type="radio"]').checked = index === optionIndex;
+            });
+        }
+
+        // Navigation functions
+        function previousQuestion() {
+            if (testState.currentQuestion > 0) {
+                testState.currentQuestion--;
+                loadQuestion(testState.currentQuestion);
+            }
+        }
+
+        function nextQuestion() {
+            if (testState.currentQuestion < allQuestions.length - 1) {
+                testState.currentQuestion++;
+                loadQuestion(testState.currentQuestion);
+            } else {
+                submitTest();
+            }
+        }
+
+        // Update progress bar
+        function updateProgress() {
+            const progress = ((testState.currentQuestion + 1) / allQuestions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+        }
+
+        // Timer functions
+        function startTimer() {
+            const timerElement = document.getElementById('timer'); // Main header timer
+            const duration = 60 * 60; // 60 minutes in seconds
+            let timeLeft = duration;
+
+            const timer = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+                // Add warning classes
+                if (timeLeft <= 300) { // 5 minutes
+                    timerElement.classList.add('danger');
+                } else if (timeLeft <= 600) { // 10 minutes
+                    timerElement.classList.add('warning');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        // Submit test
+        function submitTest() {
+            testState.endTime = new Date();
+            
+            // Calculate results
+            const totalQuestions = allQuestions.length;
+            const correctAnswers = testState.answers.filter((answer, index) => 
+                answer === allQuestions[index].correct
+            ).length;
+            const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
+            const timeTaken = Math.round((testState.endTime - testState.startTime) / 1000 / 60);
+
+            // Prepare data for Google Sheets
+            const testData = {
+                timestamp: new Date().toISOString(),
+                fullName: testState.userData.fullName,
+                mobileNumber: testState.userData.mobileNumber,
+                email: testState.userData.email,
+                totalQuestions: totalQuestions,
+                correctAnswers: correctAnswers,
+                accuracy: accuracy,
+                timeTaken: `${timeTaken}:${Math.round((testState.endTime - testState.startTime) / 1000) % 60}`,
+                securityViolations: testState.securityViolations,
+                testDuration: Math.round((testState.endTime - testState.startTime) / 1000 / 60)
+            };
+
+            // Send data to Google Sheets
+            sendToGoogleSheets(testData);
+
+            // Hide timer and clear security warnings
+            const timerElement = document.getElementById('timer');
+            timerElement.classList.remove('active');
+            timerElement.textContent = '00:00';
+            
+            // Clear any existing security warnings and reset violations
+            clearWarningTimeout();
+            const warningOverlay = document.getElementById('securityWarning');
+            warningOverlay.classList.remove('active');
+            testState.securityViolations = 0; // Reset violations for normal completion
+
+            // Display results
+            document.getElementById('testScreen').classList.remove('active');
+            document.getElementById('resultsScreen').classList.add('active');
+
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            document.getElementById('timeTaken').textContent = `${timeTaken}:${Math.round((testState.endTime - testState.startTime) / 1000) % 60}`;
+
+            // Update score circle
+            const scoreCircle = document.getElementById('scoreCircle');
+            scoreCircle.textContent = `${accuracy}%`;
+
+            // Update results icon
+            const resultsIcon = document.getElementById('resultsIcon');
+            if (accuracy >= 80) {
+                resultsIcon.className = 'results-icon success';
+                resultsIcon.innerHTML = '<i class="fas fa-trophy"></i>';
+            } else if (accuracy >= 60) {
+                resultsIcon.className = 'results-icon warning';
+                resultsIcon.innerHTML = '<i class="fas fa-medal"></i>';
+            } else {
+                resultsIcon.className = 'results-icon error';
+                resultsIcon.innerHTML = '<i class="fas fa-times-circle"></i>';
+            }
+
+            // Hide camera display and stop media stream
+            document.getElementById('cameraDisplay').style.display = 'none';
+            document.getElementById('mediaIndicator').style.display = 'none';
+            
+            if (testState.mediaStream) {
+                testState.mediaStream.getTracks().forEach(track => track.stop());
+                testState.mediaStream = null;
+            }
+
+            // Exit fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+
+        // Send data to Google Sheets
+        function sendToGoogleSheets(data) {
+            const formData = new FormData();
+            
+            // Add all data to form
+            Object.keys(data).forEach(key => {
+                formData.append(key, data[key]);
+            });
+
+            // Send to Google Apps Script
+            fetch(GOOGLE_SHEETS_CONFIG.scriptUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                console.log('Data sent to Google Sheets:', result);
+            })
+            .catch(error => {
+                console.error('Error sending data to Google Sheets:', error);
+            });
+        }
+
+        // Anti-cheating measures
+        function enableStrictAntiCheating() {
+            // Fullscreen exit detection
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            
+            // Visibility change (tab switching)
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            
+            // Window blur/focus
+            window.addEventListener('blur', handleWindowBlur);
+            window.addEventListener('focus', handleWindowFocus);
+            
+            // Prevent key combinations
+            document.addEventListener('keydown', preventCheatingKeys);
+            
+            // Monitor mouse leaving window
+            document.addEventListener('mouseleave', handleMouseLeave);
+            
+            // Disable selection and context menu
+            document.body.style.userSelect = 'none';
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('selectstart', e => e.preventDefault());
+        }
+
+        function handleFullscreenChange() {
+            const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement);
+            
+            if (!isFullscreen && testState.startTime && !testState.endTime) {
+                testState.securityViolations++;
+                showSecurityWarning('Fullscreen mode exited');
+            }
+        }
+
+        function handleVisibilityChange() {
+            if (document.hidden && testState.startTime && !testState.endTime) {
+                testState.securityViolations++;
+                showSecurityWarning('Tab switching detected');
+            }
+        }
+
+        function handleWindowBlur() {
+            if (testState.startTime && !testState.endTime) {
+                testState.securityViolations++;
+                showSecurityWarning('Window focus lost');
+            }
+        }
+
+        function handleWindowFocus() {
+            clearWarningTimeout();
+        }
+
+        function handleMouseLeave() {
+            if (testState.startTime) {
+                console.log('Mouse left window area');
+            }
+        }
+
+        function preventCheatingKeys(e) {
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                (e.ctrlKey && (e.key === 'u' || e.key === 'U')) ||
+                (e.altKey && e.key === 'Tab') ||
+                (e.ctrlKey && e.altKey && e.key === 'Delete') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'Delete')) {
+                e.preventDefault();
+                testState.securityViolations++;
+                showNotification('⚠️ That action is not allowed during the test!');
+                return false;
+            }
+        }
+
+        function showSecurityWarning(reason) {
+            console.log('Security violation:', reason);
+            
+            if (testState.securityViolations >= 2) {
+                showFullscreenWarning();
+            } else {
+                showNotification(`⚠️ Security Warning ${testState.securityViolations}/2: ${reason}. Next violation will auto-submit test.`);
+            }
+        }
+
+        function showFullscreenWarning() {
+            const warningOverlay = document.getElementById('securityWarning');
+            warningOverlay.classList.add('active');
+            
+            let countdown = 10;
+            const countdownElement = document.getElementById('warningCountdown');
+            
+            testState.warningTimeout = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(testState.warningTimeout);
+                    warningOverlay.classList.remove('active');
+                    submitTest();
+                }
+            }, 1000);
+        }
+
+        function clearWarningTimeout() {
+            if (testState.warningTimeout) {
+                clearInterval(testState.warningTimeout);
+                testState.warningTimeout = null;
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!testState.startTime) return;
+            
+            if (e.key === 'ArrowLeft' && testState.currentQuestion > 0) {
+                previousQuestion();
+            } else if (e.key === 'ArrowRight' && testState.currentQuestion < allQuestions.length - 1) {
+                nextQuestion();
+            } else if (e.key >= '1' && e.key <= '4') {
+                const optionIndex = parseInt(e.key) - 1;
+                if (optionIndex < allQuestions[testState.currentQuestion].options.length) {
+                    selectOption(optionIndex);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
