@@ -938,7 +938,7 @@
             sheetName: 'TestResults'
         };
 
-        // Test questions data
+        // Test questions data (answers removed for security - validation on server side)
         const testQuestions = {
             "logical_reasoning": [
                 {
@@ -1522,10 +1522,7 @@
                 });
 
                 const result = await response.text();
-                console.log('Duplicate check result:', result); // Debug log
-                console.log('Checking for email:', email, 'mobile:', mobileNumber);
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
+                // Debug logging removed for security
                 
                 // Reset button
                 submitBtn.innerHTML = originalText;
@@ -1549,16 +1546,11 @@
                     return;
                 } else {
                     // Error in checking - show error and don't proceed
-                    console.error('Error checking duplicates:', result);
-                    console.error('Full response:', result);
+                    console.error('Error checking duplicates');
                     
                     // TEMPORARY: For debugging, let's proceed anyway
-                    console.log('Temporary bypass for debugging - proceeding to test');
                     proceedToMediaScreen();
                     return;
-                    
-                    // showDuplicateError('Error checking for duplicates. Please try again or contact support.');
-                    // return; // Stop here, don't proceed
                 }
 
             } catch (error) {
@@ -1708,13 +1700,11 @@
         // Test Google Apps Script connection
         async function testGoogleAppsScriptConnection() {
             try {
-                console.log('Testing Google Apps Script connection...');
                 const response = await fetch(GOOGLE_SHEETS_CONFIG.scriptUrl, {
                     method: 'GET'
                 });
                 const result = await response.text();
-                console.log('Google Apps Script test result:', result);
-                console.log('Connection test successful');
+                // Connection test successful - no sensitive data logged
             } catch (error) {
                 console.error('Google Apps Script connection test failed:', error);
             }
@@ -1800,6 +1790,9 @@
             // Show welcome screen
             document.getElementById('mediaScreen').classList.remove('active');
             document.getElementById('welcomeScreen').classList.add('active');
+            
+            // Start the test after media is enabled
+            startTest();
         }
 
 
@@ -1970,12 +1963,10 @@
             
             testState.endTime = new Date();
             
-            // Calculate results
+            // Calculate results (answers validated on server side)
             const totalQuestions = allQuestions.length;
-            const correctAnswers = testState.answers.filter((answer, index) => 
-                answer === allQuestions[index].correct
-            ).length;
-            const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
+            const correctAnswers = 0; // Will be calculated on server side
+            const accuracy = 0; // Will be calculated on server side
             const timeTaken = Math.round((testState.endTime - testState.startTime) / 1000 / 60);
 
             // Validate test completion data before sending
@@ -1999,15 +1990,14 @@
                 return;
             }
 
-            // Prepare data for Google Sheets
+            // Prepare data for Google Sheets (including answers for server-side validation)
             const testData = {
                 timestamp: new Date().toISOString(),
                 fullName: testState.userData.fullName,
                 mobileNumber: testState.userData.mobileNumber,
                 email: testState.userData.email,
                 totalQuestions: totalQuestions,
-                correctAnswers: correctAnswers,
-                accuracy: accuracy,
+                answers: JSON.stringify(testState.answers), // Send answers for server validation
                 timeTaken: `${timeTaken}:${Math.round((testState.endTime - testState.startTime) / 1000) % 60}`,
                 securityViolations: testState.securityViolations,
                 testDuration: Math.round((testState.endTime - testState.startTime) / 1000 / 60)
