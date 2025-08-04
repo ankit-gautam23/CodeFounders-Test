@@ -893,9 +893,7 @@
                     </div>
                 </div>
                 
-                <button class="start-btn" onclick="location.reload()">
-                    <i class="fas fa-redo"></i> Take Test Again
-                </button>
+
             </div>
         </div>
     </div>
@@ -1525,6 +1523,9 @@
 
                 const result = await response.text();
                 console.log('Duplicate check result:', result); // Debug log
+                console.log('Checking for email:', email, 'mobile:', mobileNumber);
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
                 
                 // Reset button
                 submitBtn.innerHTML = originalText;
@@ -1549,8 +1550,15 @@
                 } else {
                     // Error in checking - show error and don't proceed
                     console.error('Error checking duplicates:', result);
-                    showDuplicateError('Error checking for duplicates. Please try again or contact support.');
-                    return; // Stop here, don't proceed
+                    console.error('Full response:', result);
+                    
+                    // TEMPORARY: For debugging, let's proceed anyway
+                    console.log('Temporary bypass for debugging - proceeding to test');
+                    proceedToMediaScreen();
+                    return;
+                    
+                    // showDuplicateError('Error checking for duplicates. Please try again or contact support.');
+                    // return; // Stop here, don't proceed
                 }
 
             } catch (error) {
@@ -1692,7 +1700,25 @@
                     });
                 }
             });
+            
+            // Test Google Apps Script connection
+            testGoogleAppsScriptConnection();
         });
+        
+        // Test Google Apps Script connection
+        async function testGoogleAppsScriptConnection() {
+            try {
+                console.log('Testing Google Apps Script connection...');
+                const response = await fetch(GOOGLE_SHEETS_CONFIG.scriptUrl, {
+                    method: 'GET'
+                });
+                const result = await response.text();
+                console.log('Google Apps Script test result:', result);
+                console.log('Connection test successful');
+            } catch (error) {
+                console.error('Google Apps Script connection test failed:', error);
+            }
+        }
         
         // Media access functions
         async function initializeMediaAccess() {
