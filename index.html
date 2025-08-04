@@ -1480,10 +1480,23 @@
             e.preventDefault();
             
             // Get form data
+            const fullName = document.getElementById('fullName').value.trim();
+            const mobileNumber = document.getElementById('mobileNumber').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            // Clear any existing errors
+            clearValidationErrors();
+            
+            // Validate form data
+            if (!validateForm(fullName, mobileNumber, email)) {
+                return; // Stop if validation fails
+            }
+            
+            // Store validated data
             testState.userData = {
-                fullName: document.getElementById('fullName').value,
-                mobileNumber: document.getElementById('mobileNumber').value,
-                email: document.getElementById('email').value
+                fullName: fullName,
+                mobileNumber: mobileNumber,
+                email: email
             };
 
             // Check for duplicate email/phone before proceeding
@@ -1524,6 +1537,15 @@
                 } else if (result.includes('no_duplicate')) {
                     // No duplicate - proceed to media screen
                     proceedToMediaScreen();
+                } else if (result.includes('error_missing_data')) {
+                    showDuplicateError('Please provide both email and mobile number.');
+                    return;
+                } else if (result.includes('error_invalid_email')) {
+                    showFieldError('email', 'Please enter a valid email address');
+                    return;
+                } else if (result.includes('error_invalid_mobile')) {
+                    showFieldError('mobileNumber', 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9');
+                    return;
                 } else {
                     // Error in checking - show error and don't proceed
                     console.error('Error checking duplicates:', result);
@@ -1584,7 +1606,94 @@
             // Initialize media access
             initializeMediaAccess();
         }
+        
+        // Form validation functions
+        function validateForm(fullName, mobileNumber, email) {
+            let isValid = true;
+            
+            // Validate full name
+            if (!fullName || fullName.length < 2) {
+                showFieldError('fullName', 'Please enter your full name (minimum 2 characters)');
+                isValid = false;
+            }
+            
+            // Validate mobile number (Indian format)
+            const mobileRegex = /^[6-9]\d{9}$/;
+            if (!mobileNumber || !mobileRegex.test(mobileNumber)) {
+                showFieldError('mobileNumber', 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9');
+                isValid = false;
+            }
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                showFieldError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'field-error';
+            errorDiv.style.cssText = 'color: #dc3545; font-size: 0.85rem; margin-top: 0.25rem; display: block;';
+            errorDiv.textContent = message;
+            
+            // Remove any existing error for this field
+            const existingError = field.parentNode.querySelector('.field-error');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Add error after the field
+            field.parentNode.appendChild(errorDiv);
+            
+            // Highlight the field
+            field.style.borderColor = '#dc3545';
+        }
+        
+        function clearValidationErrors() {
+            // Remove all field errors
+            const fieldErrors = document.querySelectorAll('.field-error');
+            fieldErrors.forEach(error => error.remove());
+            
+            // Reset field borders
+            const fields = ['fullName', 'mobileNumber', 'email'];
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.style.borderColor = '';
+                }
+            });
+            
+            // Remove duplicate error
+            const duplicateError = document.querySelector('.duplicate-error');
+            if (duplicateError) {
+                duplicateError.remove();
+            }
+        }
 
+        // Add real-time validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const fields = ['fullName', 'mobileNumber', 'email'];
+            
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function() {
+                        // Clear field error when user starts typing
+                        const error = this.parentNode.querySelector('.field-error');
+                        if (error) {
+                            error.remove();
+                        }
+                        this.style.borderColor = '';
+                    });
+                }
+            });
+        });
+        
         // Media access functions
         async function initializeMediaAccess() {
             const videoElement = document.getElementById('mediaPreview');
@@ -1826,6 +1935,13 @@
 
         // Submit test
         function submitTest() {
+            // Validate that test was actually started
+            if (!testState.startTime) {
+                console.error('Test was not properly started');
+                alert('Error: Test was not properly started. Please refresh and try again.');
+                return;
+            }
+            
             testState.endTime = new Date();
             
             // Calculate results
@@ -1835,6 +1951,27 @@
             ).length;
             const accuracy = Math.round((correctAnswers / totalQuestions) * 100);
             const timeTaken = Math.round((testState.endTime - testState.startTime) / 1000 / 60);
+
+            // Validate test completion data before sending
+            if (!testState.userData || !testState.userData.fullName || !testState.userData.email || !testState.userData.mobileNumber) {
+                console.error('Incomplete user data - cannot save test results');
+                alert('Error: Incomplete user data. Please refresh and retake the test.');
+                return;
+            }
+            
+            // Check if user answered any questions
+            const answeredQuestions = testState.answers.filter(answer => answer !== null && answer !== undefined).length;
+            if (answeredQuestions === 0) {
+                console.error('No questions were answered');
+                alert('Error: You must answer at least one question to submit the test.');
+                return;
+            }
+            
+            if (totalQuestions === 0 || correctAnswers > totalQuestions || accuracy < 0 || accuracy > 100) {
+                console.error('Invalid test data - cannot save results');
+                alert('Error: Invalid test data. Please refresh and retake the test.');
+                return;
+            }
 
             // Prepare data for Google Sheets
             const testData = {
